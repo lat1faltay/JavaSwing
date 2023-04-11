@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.sql.*;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -15,6 +17,38 @@ public class demo extends javax.swing.JFrame {
     public demo() {
         initComponents();
     }
+    
+    public ArrayList<City> getCities() throws SQLException{
+        Connection connection = null;
+        DbHelper dbHelper = new DbHelper();
+        Statement statement = null;
+        ResultSet resultSet;
+        ArrayList<City> cities = null;
+        
+        try{
+            connection = dbHelper.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select * from City");
+            cities = new ArrayList<City>();
+            while(resultSet.next()){
+                cities.add(new City(
+                        resultSet.getInt("ID"),
+                        resultSet.getString("Name"),
+                        resultSet.getString("CountryCode"),
+                        resultSet.getString("District"),
+                        resultSet.getInt("Population")));
+            }  
+        }catch(SQLException exception){
+            dbHelper.showErrorMessage(exception);
+        }finally{
+            statement.close();
+            connection.close();
+        }
+        
+        return cities;
+        
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -25,17 +59,58 @@ public class demo extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblCities = new javax.swing.JTable();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        tblCities.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Name", "CountryCode", "District", "Population"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblCities);
+        if (tblCities.getColumnModel().getColumnCount() > 0) {
+            tblCities.getColumnModel().getColumn(0).setResizable(false);
+            tblCities.getColumnModel().getColumn(1).setResizable(false);
+            tblCities.getColumnModel().getColumn(2).setResizable(false);
+            tblCities.getColumnModel().getColumn(3).setResizable(false);
+            tblCities.getColumnModel().getColumn(4).setResizable(false);
+        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 562, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(57, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(271, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
         );
 
         pack();
@@ -77,5 +152,7 @@ public class demo extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblCities;
     // End of variables declaration//GEN-END:variables
 }
