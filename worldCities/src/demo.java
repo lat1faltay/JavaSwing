@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -11,11 +14,22 @@ import java.sql.*;
  */
 public class demo extends javax.swing.JFrame {
 
-    /**
-     * Creates new form demo
-     */
+    DefaultTableModel model;
+    
     public demo() {
         initComponents();
+        model = (DefaultTableModel)tblCities.getModel();
+        try {
+            ArrayList<City> cities = getCities();
+            
+            for(City city : cities){
+                Object[] row = {city.getId(), city.getName(), city.getCountryCode(),city.getDistrict(), city.getPopulation()};
+                model.addRow(row);
+            }
+            
+        } catch (SQLException ex) {
+            
+        }
     }
     
     public ArrayList<City> getCities() throws SQLException{
